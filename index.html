@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Bank Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f36b7f, #c57ff5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 10px;
+      overflow-y: scroll;
+    }
+
+    .container {
+      background-color: #0f0f1b;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 360px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      background: #fff;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo img {
+      width: 30px;
+      height: 30px;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    p {
+      color: #bbb;
+      font-size: 12px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 15px;
+      border: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .btn.popup {
+      animation: popup 0.4s ease;
+    }
+
+    @keyframes popup {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .login-btn {
+      background-color: #ff5c5c;
+      color: white;
+    }
+
+    .signup-btn {
+      background-color: white;
+      color: black;
+    }
+
+    .discount-card {
+      background-color: #ff5c5c;
+      border-radius: 20px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .discount-text {
+      color: white;
+      flex: 1;
+      text-align: left;
+    }
+
+    .discount-text h2 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .discount-text span {
+      font-size: 12px;
+    }
+
+    .discount-img img {
+      width: 70px;
+      height: 70px;
+      border-radius: 15px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 400px) {
+      .container {
+        padding: 25px 15px;
+      }
+
+      .discount-text h2 {
+        font-size: 16px;
+      }
+
+      .btn {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png" alt="Food Icon" />
+    </div>
+    <h1>Food Bank</h1>
+    <p>Special & Delicious Food</p>
+
+    <button class="btn login-btn" id="loginBtn">Log In</button>
+    <button class="btn signup-btn" id="signupBtn">Sign Up</button>
+
+    <div class="discount-card">
+      <div class="discount-text">
+        <h2>15%<br>Discount</h2>
+        <span>From Our Store</span>
+      </div>
+      <div class="discount-img">
+        <img src="https://img.freepik.com/free-photo/pancakes-with-berries-white-plate_144627-14447.jpg" alt="Pancakes" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Popup effect on scroll for buttons
+    window.addEventListener('scroll', () => {
+      document.getElementById('loginBtn').classList.add('popup');
+      document.getElementById('signupBtn').classList.add('popup');
+      setTimeout(() => {
+        document.getElementById('loginBtn').classList.remove('popup');
+        document.getElementById('signupBtn').classList.remove('popup');
+      }, 400);
+    });
+  </script>
+</body>
+</html>
