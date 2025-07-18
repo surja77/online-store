@@ -168,7 +168,7 @@
   </div>
 
   <script>
-    // Popup effect on scroll for buttons
+    // Popup effect on scroll
     window.addEventListener('scroll', () => {
       document.getElementById('loginBtn').classList.add('popup');
       document.getElementById('signupBtn').classList.add('popup');
@@ -176,6 +176,22 @@
         document.getElementById('loginBtn').classList.remove('popup');
         document.getElementById('signupBtn').classList.remove('popup');
       }, 400);
+    });
+
+    // Log In -> menu.html
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      window.location.href = 'menu.html';
+    });
+
+    // Sign Up -> profile.html on first click, then menu.html
+    document.getElementById('signupBtn').addEventListener('click', () => {
+      const alreadySignedUp = localStorage.getItem('alreadySignedUp');
+      if (!alreadySignedUp) {
+        localStorage.setItem('alreadySignedUp', 'true');
+        window.location.href = 'profile.html';
+      } else {
+        window.location.href = 'menu.html';
+      }
     });
   </script>
 </body>
