@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Menu</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0e0e23;
+      color: white;
+    }
+
+    header {
+      background: url('https://source.unsplash.com/400x250/?cake') no-repeat center center/cover;
+      height: 250px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+
+    .profile, .cart-icon {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .profile {
+      top: 15px;
+      left: 15px;
+      background-image: url('https://source.unsplash.com/40x40/?profile');
+    }
+
+    .cart-icon {
+      top: 15px;
+      right: 15px;
+      background-image: url('https://source.unsplash.com/40x40/?cart');
+    }
+
+    .cart-icon:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px;
+    }
+
+    .filter-buttons button {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .filter-buttons button:hover {
+      background-color: #e60000;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      padding: 0 20px 40px;
+    }
+
+    .food-item {
+      background: #1a1a3d;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .food-item.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .food-item img {
+      width: 100%;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .food-item h3 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+    }
+
+    .food-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .add-btn {
+      margin-top: 10px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .add-btn:hover {
+      background-color: #e60000;
+    }
+
+    .cart {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #ff4d4d;
+      padding: 10px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .food-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .food-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pop {
+      animation: pop 0.4s ease-in-out;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cart" id="cart-count">0</div>
+
+  <header>
+    <div class="profile" onclick="window.location.href='profile.html'"></div>
+    <div class="cart-icon" onclick="window.location.href='cart.html'"></div>
+    <h1>Different<br>Kind of Food</h1>
+  </header>
+
+  <div class="filter-buttons">
+    <button data-filter="all">All</button>
+    <button data-filter="starter">Starter</button>
+    <button data-filter="main">Main Course</button>
+    <button data-filter="dessert">Dessert</button>
+    <button data-filter="others">Others</button>
+  </div>
+
+  <div class="food-grid" id="food-grid"></div>
+
+  <script>
+    const items = [
+      { name: 'burger', category: 'main' },
+      { name: 'egg', category: 'starter' },
+      { name: 'dessert', category: 'dessert' },
+      { name: 'soup', category: 'starter' },
+      { name: 'pancake', category: 'dessert' },
+      { name: 'noodles', category: 'main' },
+      { name: 'pizza', category: 'main' },
+      { name: 'taco', category: 'main' },
+      { name: 'steak', category: 'main' },
+      { name: 'fries', category: 'starter' },
+      { name: 'sandwich', category: 'main' },
+      { name: 'hotdog', category: 'others' },
+      { name: 'salad', category: 'starter' },
+      { name: 'spaghetti', category: 'main' },
+      { name: 'rice', category: 'main' },
+      { name: 'biryani', category: 'main' },
+      { name: 'curry', category: 'main' },
+      { name: 'ramen', category: 'main' },
+      { name: 'wrap', category: 'others' },
+      { name: 'bbq', category: 'main' },
+      { name: 'dimsum', category: 'others' },
+      { name: 'shawarma', category: 'main' },
+      { name: 'lasagna', category: 'main' },
+      { name: 'icecream', category: 'dessert' },
+      { name: 'cake', category: 'dessert' },
+      { name: 'chocolate', category: 'dessert' },
+      { name: 'smoothie', category: 'others' },
+      { name: 'juice', category: 'others' },
+      { name: 'coffee', category: 'others' },
+      { name: 'tea', category: 'others' },
+      { name: 'chicken', category: 'main' },
+      { name: 'meatballs', category: 'main' },
+      { name: 'kebab', category: 'main' },
+      { name: 'dumpling', category: 'others' },
+      { name: 'fish', category: 'main' },
+      { name: 'sushi', category: 'others' },
+      { name: 'samosa', category: 'starter' },
+      { name: 'donut', category: 'dessert' },
+      { name: 'waffle', category: 'dessert' },
+      { name: 'pudding', category: 'dessert' },
+      { name: 'croissant', category: 'dessert' },
+      { name: 'roll', category: 'starter' },
+      { name: 'bacon', category: 'main' },
+      { name: 'muffin', category: 'dessert' },
+      { name: 'toast', category: 'starter' },
+      { name: 'cupcake', category: 'dessert' },
+      { name: 'cheesecake', category: 'dessert' },
+      { name: 'pasta', category: 'main' },
+      { name: 'milkshake', category: 'others' },
+      { name: 'falafel', category: 'others' }
+    ];
+
+    const grid = document.getElementById('food-grid');
+    let cartCount = 0;
+
+    function renderItems(filter) {
+      grid.innerHTML = '';
+      items.forEach(({ name, category }) => {
+        if (filter === 'all' || category === filter) {
+          const div = document.createElement('div');
+          div.className = 'food-item';
+          div.setAttribute('data-category', category);
+          div.innerHTML = `
+            <img src="https://source.unsplash.com/200x200/?${name}" alt="Food">
+            <h3>${name.charAt(0).toUpperCase() + name.slice(1)}</h3>
+            <p>$${(Math.floor(Math.random() * 20) + 5).toFixed(2)}</p>
+            <button class="add-btn" onclick="addToCart(this)">Add Cart</button>
+          `;
+          grid.appendChild(div);
+        }
+      });
+    }
+
+    function addToCart(btn) {
+      cartCount++;
+      document.getElementById('cart-count').innerText = cartCount;
+      const item = btn.closest('.food-item');
+      item.classList.add('pop');
+      setTimeout(() => item.classList.remove('pop'), 400);
+    }
+
+    document.querySelectorAll('.filter-buttons button').forEach(button => {
+      button.addEventListener('click', () => {
+        const filter = button.getAttribute('data-filter');
+        renderItems(filter);
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      const foodItems = document.querySelectorAll('.food-item');
+      foodItems.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 50) {
+          item.classList.add('visible');
+        }
+      });
+    });
+
+    renderItems('all');
+  </script>
+</body>
+</html>
