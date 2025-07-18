@@ -75,6 +75,10 @@
       background-color: #e60000;
     }
 
+    .filter-buttons button.active {
+      background-color: #ff1a1a;
+    }
+
     .food-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -99,6 +103,8 @@
 
     .food-item img {
       width: 100%;
+      height: 100px;
+      object-fit: cover;
       border-radius: 8px;
       transition: transform 0.3s ease;
     }
@@ -157,15 +163,9 @@
     }
 
     @keyframes pop {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
@@ -179,7 +179,7 @@
   </header>
 
   <div class="filter-buttons">
-    <button data-filter="all">All</button>
+    <button data-filter="all" class="active">All</button>
     <button data-filter="starter">Starter</button>
     <button data-filter="main">Main Course</button>
     <button data-filter="dessert">Dessert</button>
@@ -189,82 +189,89 @@
   <div class="food-grid" id="food-grid"></div>
 
   <script>
-    const items = [
-      { name: 'burger', category: 'main' },
-      { name: 'egg', category: 'starter' },
-      { name: 'dessert', category: 'dessert' },
-      { name: 'soup', category: 'starter' },
-      { name: 'pancake', category: 'dessert' },
-      { name: 'noodles', category: 'main' },
-      { name: 'pizza', category: 'main' },
-      { name: 'taco', category: 'main' },
-      { name: 'steak', category: 'main' },
-      { name: 'fries', category: 'starter' },
-      { name: 'sandwich', category: 'main' },
-      { name: 'hotdog', category: 'others' },
-      { name: 'salad', category: 'starter' },
-      { name: 'spaghetti', category: 'main' },
-      { name: 'rice', category: 'main' },
-      { name: 'biryani', category: 'main' },
-      { name: 'curry', category: 'main' },
-      { name: 'ramen', category: 'main' },
-      { name: 'wrap', category: 'others' },
-      { name: 'bbq', category: 'main' },
-      { name: 'dimsum', category: 'others' },
-      { name: 'shawarma', category: 'main' },
-      { name: 'lasagna', category: 'main' },
-      { name: 'icecream', category: 'dessert' },
-      { name: 'cake', category: 'dessert' },
-      { name: 'chocolate', category: 'dessert' },
-      { name: 'smoothie', category: 'others' },
-      { name: 'juice', category: 'others' },
-      { name: 'coffee', category: 'others' },
-      { name: 'tea', category: 'others' },
-      { name: 'chicken', category: 'main' },
-      { name: 'meatballs', category: 'main' },
-      { name: 'kebab', category: 'main' },
-      { name: 'dumpling', category: 'others' },
-      { name: 'fish', category: 'main' },
-      { name: 'sushi', category: 'others' },
-      { name: 'samosa', category: 'starter' },
-      { name: 'donut', category: 'dessert' },
-      { name: 'waffle', category: 'dessert' },
-      { name: 'pudding', category: 'dessert' },
-      { name: 'croissant', category: 'dessert' },
-      { name: 'roll', category: 'starter' },
-      { name: 'bacon', category: 'main' },
-      { name: 'muffin', category: 'dessert' },
-      { name: 'toast', category: 'starter' },
-      { name: 'cupcake', category: 'dessert' },
-      { name: 'cheesecake', category: 'dessert' },
-      { name: 'pasta', category: 'main' },
-      { name: 'milkshake', category: 'others' },
-      { name: 'falafel', category: 'others' }
+    const foodItems = [
+      { name: 'burger', category: 'starter', price: 4.50 },
+      { name: 'egg', category: 'starter', price: 4.50 },
+      { name: 'dessert', category: 'dessert', price: 5.99 },
+      { name: 'soup', category: 'starter', price: 3.75 },
+      { name: 'pancake', category: 'dessert', price: 6.20 },
+      { name: 'noodles', category: 'main', price: 7.50 },
+      { name: 'pizza', category: 'main', price: 9.99 },
+      { name: 'taco', category: 'main', price: 6.99 },
+      { name: 'steak', category: 'main', price: 14.99 },
+      { name: 'fries', category: 'starter', price: 3.99 },
+      { name: 'sandwich', category: 'main', price: 5.49 },
+      { name: 'hotdog', category: 'others', price: 4.99 },
+      { name: 'salad', category: 'starter', price: 5.20 },
+      { name: 'spaghetti', category: 'main', price: 7.80 },
+      { name: 'rice', category: 'main', price: 3.60 },
+      { name: 'biryani', category: 'main', price: 8.30 },
+      { name: 'curry', category: 'main', price: 7.10 },
+      { name: 'ramen', category: 'main', price: 9.00 },
+      { name: 'wrap', category: 'others', price: 5.90 },
+      { name: 'bbq', category: 'main', price: 11.99 },
+      { name: 'dimsum', category: 'others', price: 6.00 },
+      { name: 'shawarma', category: 'main', price: 7.50 },
+      { name: 'lasagna', category: 'main', price: 8.60 },
+      { name: 'icecream', category: 'dessert', price: 3.50 },
+      { name: 'cake', category: 'dessert', price: 4.70 },
+      { name: 'chocolate', category: 'dessert', price: 2.99 },
+      { name: 'smoothie', category: 'others', price: 4.25 },
+      { name: 'juice', category: 'others', price: 2.80 },
+      { name: 'coffee', category: 'others', price: 3.30 },
+      { name: 'tea', category: 'others', price: 2.50 },
+      { name: 'chicken', category: 'main', price: 8.40 },
+      { name: 'meatballs', category: 'main', price: 7.20 },
+      { name: 'kebab', category: 'main', price: 6.99 },
+      { name: 'dumpling', category: 'others', price: 5.10 },
+      { name: 'fish', category: 'main', price: 9.30 },
+      { name: 'sushi', category: 'others', price: 10.99 },
+      { name: 'samosa', category: 'starter', price: 2.90 },
+      { name: 'donut', category: 'dessert', price: 2.70 },
+      { name: 'waffle', category: 'dessert', price: 4.20 },
+      { name: 'pudding', category: 'dessert', price: 3.80 },
+      { name: 'croissant', category: 'dessert', price: 3.60 },
+      { name: 'roll', category: 'starter', price: 3.10 },
+      { name: 'bacon', category: 'main', price: 5.99 },
+      { name: 'muffin', category: 'dessert', price: 3.00 },
+      { name: 'toast', category: 'starter', price: 2.60 },
+      { name: 'cupcake', category: 'dessert', price: 3.20 },
+      { name: 'cheesecake', category: 'dessert', price: 4.90 },
+      { name: 'pasta', category: 'main', price: 7.70 },
+      { name: 'milkshake', category: 'others', price: 4.80 },
+      { name: 'falafel', category: 'others', price: 5.40 }
     ];
 
     const grid = document.getElementById('food-grid');
-    let cartCount = 0;
+    let cartCount = localStorage.getItem('cartCount') || 0;
+    document.getElementById('cart-count').innerText = cartCount;
 
     function renderItems(filter) {
       grid.innerHTML = '';
-      items.forEach(({ name, category }) => {
+      foodItems.forEach(({ name, category, price }) => {
         if (filter === 'all' || category === filter) {
           const div = document.createElement('div');
           div.className = 'food-item';
-          div.setAttribute('data-category', category);
           div.innerHTML = `
-            <img src="https://source.unsplash.com/200x200/?${name}" alt="Food">
+            <img src="https://source.unsplash.com/200x200/?${name},food" alt="${name}" onerror="this.src='fallback.jpg'">
             <h3>${name.charAt(0).toUpperCase() + name.slice(1)}</h3>
-            <p>$${(Math.floor(Math.random() * 20) + 5).toFixed(2)}</p>
+            <p>₹${price.toFixed(2)}</p>
             <button class="add-btn" onclick="addToCart(this)">Add Cart</button>
           `;
           grid.appendChild(div);
         }
       });
+      setTimeout(() => {
+        document.querySelectorAll('.food-item').forEach(item => {
+          const rect = item.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 50) item.classList.add('visible');
+        });
+      }, 100);
     }
 
     function addToCart(btn) {
       cartCount++;
+      localStorage.setItem('cartCount', cartCount);
       document.getElementById('cart-count').innerText = cartCount;
       const item = btn.closest('.food-item');
       item.classList.add('pop');
@@ -273,18 +280,17 @@
 
     document.querySelectorAll('.filter-buttons button').forEach(button => {
       button.addEventListener('click', () => {
+        document.querySelectorAll('.filter-buttons button').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
         const filter = button.getAttribute('data-filter');
         renderItems(filter);
       });
     });
 
     window.addEventListener('scroll', () => {
-      const foodItems = document.querySelectorAll('.food-item');
-      foodItems.forEach(item => {
+      document.querySelectorAll('.food-item').forEach(item => {
         const rect = item.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 50) {
-          item.classList.add('visible');
-        }
+        if (rect.top < window.innerHeight - 50) item.classList.add('visible');
       });
     });
 
