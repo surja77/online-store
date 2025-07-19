@@ -207,14 +207,23 @@
             <p>₹ ${item.price.toFixed(2)}</p>
           </div>
           <div class="quantity-controls">
-            <button onclick="decreaseQuantity(this)">-</button>
+            <button onclick="decreaseQuantity(this, '${item.name}')">-</button>
             <span>${item.quantity}</span>
-            <button onclick="increaseQuantity(this)">+</button>
+            <button onclick="increaseQuantity(this, '${item.name}')">+</button>
           </div>
         `;
         container.appendChild(div);
       });
       updateTotal();
+    }
+
+    function updateCartStorage(name, quantity) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const updatedCart = cart.map(item => {
+        if (item.name === name) item.quantity = quantity;
+        return item;
+      });
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
     }
 
     function updateTotal() {
@@ -228,17 +237,21 @@
       document.querySelector('.total').textContent = 'Total: ₹ ' + total.toFixed(2);
     }
 
-    function increaseQuantity(btn) {
+    function increaseQuantity(btn, name) {
       const span = btn.parentElement.querySelector('span');
-      span.textContent = parseInt(span.textContent) + 1;
+      const quantity = parseInt(span.textContent) + 1;
+      span.textContent = quantity;
+      updateCartStorage(name, quantity);
       updateTotal();
     }
 
-    function decreaseQuantity(btn) {
+    function decreaseQuantity(btn, name) {
       const span = btn.parentElement.querySelector('span');
       let quantity = parseInt(span.textContent);
       if (quantity > 1) {
-        span.textContent = quantity - 1;
+        quantity--;
+        span.textContent = quantity;
+        updateCartStorage(name, quantity);
         updateTotal();
       }
     }
