@@ -198,65 +198,61 @@
       <p>₹ 120.00</p>
       <button onclick="animateCard(this)">Add Cart</button>
     </div>
-    <div class="card starter">
-      <img src="https://images.unsplash.com/photo-1584270354949-1f7b1f1dd2f9" alt="Egg" />
-      <p>Boiled Egg</p>
-      <p>₹ 60.00</p>
+    <div class="card maincourse">
+      <img src="https://images.unsplash.com/photo-1604152135912-04a022e2369f" alt="Grilled Chicken" />
+      <p>Grilled Chicken</p>
+      <p>₹ 250.00</p>
       <button onclick="animateCard(this)">Add Cart</button>
     </div>
     <div class="card dessert">
-      <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84d" alt="Dessert" />
-      <p>Chocolate Cake</p>
-      <p>₹ 150.00</p>
+      <img src="https://images.unsplash.com/photo-1601979031925-04ad1a596e0d" alt="Ice Cream" />
+      <p>Ice Cream</p>
+      <p>₹ 80.00</p>
       <button onclick="animateCard(this)">Add Cart</button>
     </div>
-    <div class="card other">
-      <img src="https://images.unsplash.com/photo-1506354666786-959d6d497f1a" alt="Soup" />
-      <p>Hot Soup</p>
+    <div class="card starter">
+      <img src="https://images.unsplash.com/photo-1625947296270-1b19b98b1b7b" alt="Spring Rolls" />
+      <p>Spring Rolls</p>
       <p>₹ 90.00</p>
       <button onclick="animateCard(this)">Add Cart</button>
     </div>
-    <div class="card dessert">
-      <img src="https://images.unsplash.com/photo-1613145991214-88848f9e5f63" alt="Pancakes" />
-      <p>Strawberry Pancake</p>
-      <p>₹ 180.00</p>
-      <button onclick="animateCard(this)">Add Cart</button>
-    </div>
-    <div class="card maincourse">
-      <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f" alt="Noodles" />
-      <p>Veg Noodles</p>
-      <p>₹ 110.00</p>
-      <button onclick="animateCard(this)">Add Cart</button>
-    </div>
-    <div class="card maincourse">
-      <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add" alt="Pizza" />
-      <p>Pizza</p>
-      <p>₹ 200.00</p>
-      <button onclick="animateCard(this)">Add Cart</button>
-    </div>
     <div class="card other">
-      <img src="https://images.unsplash.com/photo-1615486363801-7b5214e1201e" alt="Salad" />
-      <p>Fruit Salad</p>
+      <img src="https://images.unsplash.com/photo-1572441710534-8a5bca88f5ef" alt="Sandwich" />
+      <p>Veg Sandwich</p>
       <p>₹ 70.00</p>
       <button onclick="animateCard(this)">Add Cart</button>
     </div>
-    <div class="card other">
-      <img src="https://images.unsplash.com/photo-1615486363801-7b5214e1201e" alt="Salad" />
-      <p>Fruit Salad</p>
-      <p>₹ 90.00</p>
+    <div class="card dessert">
+      <img src="https://images.unsplash.com/photo-1590080876538-a258cb6406b3" alt="Donuts" />
+      <p>Donuts</p>
+      <p>₹ 100.00</p>
       <button onclick="animateCard(this)">Add Cart</button>
     </div>
   </div>
 
   <script>
     let cartCount = 0;
+    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    cartCount = storedCart.length;
+    document.getElementById("cart-count").textContent = cartCount;
 
     function animateCard(button) {
       const card = button.closest(".card");
       card.classList.remove("animate");
       void card.offsetWidth;
       card.classList.add("animate");
-      cartCount++;
+
+      const name = card.querySelector("p:nth-of-type(1)").textContent;
+      const price = card.querySelector("p:nth-of-type(2)").textContent;
+      const imgSrc = card.querySelector("img").src;
+
+      const item = { name, price, imgSrc };
+
+      let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      cartItems.push(item);
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+      cartCount = cartItems.length;
       document.getElementById("cart-count").textContent = cartCount;
     }
 
