@@ -276,5 +276,70 @@
       });
     }
   </script>
+  <!-- menu.html -->
+<script>
+  let cartCount = 0;
+
+  function loadCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    cartCount = totalItems;
+    const cartCountEl = document.getElementById("cart-count");
+    if (cartCountEl) {
+      cartCountEl.textContent = cartCount;
+    }
+  }
+
+  function animateCard(button) {
+    const card = button.closest(".card");
+    if (!card) return;
+    card.classList.remove("animate");
+    void card.offsetWidth;
+    card.classList.add("animate");
+
+    const nameEl = card.querySelector("p:nth-of-type(1)");
+    const priceEl = card.querySelector("p:nth-of-type(2)");
+    const imgEl = card.querySelector("img");
+    if (!nameEl || !priceEl || !imgEl) return;
+
+    const name = nameEl.textContent;
+    const priceText = priceEl.textContent;
+    const image = imgEl.src;
+    const price = parseFloat(priceText.replace(/[^0-9.]/g, ""));
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({ name, price, image, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCartCount();
+  }
+
+  function filterItems(category) {
+    const cards = document.querySelectorAll(".card");
+    const buttons = document.querySelectorAll(".filters button");
+
+    buttons.forEach(btn => btn.classList.remove("active"));
+    if (event && event.target) {
+      event.target.classList.add("active");
+    }
+
+    cards.forEach(card => {
+      if (category === "all" || card.classList.contains(category)) {
+        card.style.display = "flex";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', loadCartCount);
+</script>
+
 </body>
 </html>
