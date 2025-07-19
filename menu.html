@@ -1,299 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Food Menu</title>
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #0e0e23;
-      color: white;
     }
 
-    header {
-      background: url('https://source.unsplash.com/400x250/?cake') no-repeat center center/cover;
-      height: 250px;
+    body {
+      background-color: #0b0b15;
+      color: white;
+      padding: 10px;
+    }
+
+    .header {
       position: relative;
+      background-image: url('https://images.unsplash.com/photo-1586190848861-99aa4a171e90');
+      background-size: cover;
+      background-position: center;
+      height: 200px;
+      border-radius: 15px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .header h1 {
       text-align: center;
-      padding: 20px;
-    }
-
-    header h1 {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
-      line-height: 1.2;
+      color: white;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
     }
 
-    .profile, .cart-icon {
+    .profile-btn, .cart-btn {
       position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      border: 2px solid #fff;
-      cursor: pointer;
-    }
-
-    .profile {
-      top: 15px;
-      left: 15px;
-      background-image: url('https://source.unsplash.com/40x40/?profile');
-    }
-
-    .cart-icon {
-      top: 15px;
-      right: 15px;
-      background-image: url('https://source.unsplash.com/40x40/?cart');
-    }
-
-    .cart-icon:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .filter-buttons {
-      display: flex;
-      justify-content: space-around;
-      margin: 20px;
-    }
-
-    .filter-buttons button {
-      background-color: #ff4d4d;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-
-    .filter-buttons button:hover {
-      background-color: #e60000;
-    }
-
-    .filter-buttons button.active {
-      background-color: #ff1a1a;
-    }
-
-    .food-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 15px;
-      padding: 0 20px 40px;
-    }
-
-    .food-item {
-      background: #1a1a3d;
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all 0.5s ease;
-    }
-
-    .food-item.visible {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .food-item img {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-      transition: transform 0.3s ease;
-    }
-
-    .food-item h3 {
-      margin: 10px 0 5px;
-      font-size: 16px;
-    }
-
-    .food-item p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    .add-btn {
-      margin-top: 10px;
-      background-color: #ff4d4d;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .add-btn:hover {
-      background-color: #e60000;
-    }
-
-    .cart {
-      position: fixed;
       top: 10px;
-      right: 10px;
-      background-color: #ff4d4d;
-      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 20px;
+      padding: 8px;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      text-align: center;
-      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .profile-btn {
+      left: 10px;
+    }
+
+    .cart-btn {
+      right: 10px;
+    }
+
+    .cart-btn span {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filters button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 20px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+
+    .filters button.active {
+      background-color: #ff4d4d;
+    }
+
+    .food-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .card {
+      background-color: #1c1c2e;
+      border-radius: 10px;
+      width: calc(33% - 10px);
+      padding: 10px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: scale(0.9);
+      animation: popup 0.4s ease forwards;
+    }
+
+    .card.animate {
+      animation: clickPopup 0.4s ease;
+    }
+
+    @keyframes popup {
+      0% {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes clickPopup {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .card img {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    .card button {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     @media (max-width: 768px) {
-      .food-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .card {
+        width: calc(50% - 10px);
       }
     }
 
     @media (max-width: 480px) {
-      .food-grid {
-        grid-template-columns: 1fr;
+      .card {
+        width: 100%;
       }
-    }
-
-    .pop {
-      animation: pop 0.4s ease-in-out;
-    }
-
-    @keyframes pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div class="cart" id="cart-count">0</div>
 
-  <header>
-    <div class="profile" onclick="window.location.href='profile.html'"></div>
-    <div class="cart-icon" onclick="window.location.href='cart.html'"></div>
+  <div class="header">
+    <button class="profile-btn" onclick="window.location.href='profile.html'">👤</button>
+    <button class="cart-btn" onclick="window.location.href='cart.html'">🛒<span id="cart-count">0</span></button>
     <h1>Different<br>Kind of Food</h1>
-  </header>
-
-  <div class="filter-buttons">
-    <button data-filter="all" class="active">All</button>
-    <button data-filter="starter">Starter</button>
-    <button data-filter="main">Main Course</button>
-    <button data-filter="dessert">Dessert</button>
-    <button data-filter="others">Others</button>
   </div>
 
-  <div class="food-grid" id="food-grid"></div>
+  <div class="filters">
+    <button class="active" onclick="filterItems('all')">All</button>
+    <button onclick="filterItems('starter')">Starter</button>
+    <button onclick="filterItems('maincourse')">Main Course</button>
+    <button onclick="filterItems('dessert')">Dessert</button>
+    <button onclick="filterItems('other')">Other</button>
+  </div>
+
+  <div class="food-list">
+    <div class="card starter">
+      <img src="https://images.unsplash.com/photo-1550547660-d9450f859349" alt="Burger" />
+      <p>Burger</p>
+      <p>₹ 120.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card starter">
+      <img src="https://images.unsplash.com/photo-1584270354949-1f7b1f1dd2f9" alt="Egg" />
+      <p>Boiled Egg</p>
+      <p>₹ 60.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card dessert">
+      <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84d" alt="Dessert" />
+      <p>Chocolate Cake</p>
+      <p>₹ 150.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card other">
+      <img src="https://images.unsplash.com/photo-1506354666786-959d6d497f1a" alt="Soup" />
+      <p>Hot Soup</p>
+      <p>₹ 90.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card dessert">
+      <img src="https://images.unsplash.com/photo-1613145991214-88848f9e5f63" alt="Pancakes" />
+      <p>Strawberry Pancake</p>
+      <p>₹ 180.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card maincourse">
+      <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f" alt="Noodles" />
+      <p>Veg Noodles</p>
+      <p>₹ 110.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card maincourse">
+      <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add" alt="Pizza" />
+      <p>Pizza</p>
+      <p>₹ 200.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card other">
+      <img src="https://images.unsplash.com/photo-1615486363801-7b5214e1201e" alt="Salad" />
+      <p>Fruit Salad</p>
+      <p>₹ 70.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+    <div class="card other">
+      <img src="https://images.unsplash.com/photo-1615486363801-7b5214e1201e" alt="Salad" />
+      <p>Fruit Salad</p>
+      <p>₹ 90.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+  </div>
 
   <script>
-    const foodItems = [
-  { name: 'burger', category: 'starter', price: 4.50, image: 'image/1000246154 (1).jpg' },
-  { name: 'egg', category: 'starter', price: 4.50, image: 'https://github.com/surja77/online-store/blob/main/image/1000246154%20(2).jpg' },
-  { name: 'dessert', category: 'dessert', price: 5.99, image: 'images/dessert.jpg' },
-  { name: 'soup', category: 'starter', price: 3.75, image: 'images/soup.jpg' },
-  { name: 'pancake', category: 'dessert', price: 6.20, image: 'images/pancake.jpg' },
-  { name: 'noodles', category: 'main', price: 7.50, image: 'images/noodles.jpg' },
-  { name: 'pizza', category: 'main', price: 9.99, image: 'images/pizza.jpg' },
-  { name: 'taco', category: 'main', price: 6.99, image: 'images/taco.jpg' },
-  { name: 'steak', category: 'main', price: 14.99, image: 'images/steak.jpg' },
-  { name: 'fries', category: 'starter', price: 3.99, image: 'images/fries.jpg' },
-  { name: 'sandwich', category: 'main', price: 5.49, image: 'images/sandwich.jpg' },
-  { name: 'hotdog', category: 'others', price: 4.99, image: 'images/hotdog.jpg' },
-  { name: 'salad', category: 'starter', price: 5.20, image: 'images/salad.jpg' },
-  { name: 'spaghetti', category: 'main', price: 7.80, image: 'images/spaghetti.jpg' },
-  { name: 'rice', category: 'main', price: 3.60, image: 'images/rice.jpg' },
-  { name: 'biryani', category: 'main', price: 8.30, image: 'images/biryani.jpg' },
-  { name: 'curry', category: 'main', price: 7.10, image: 'images/curry.jpg' },
-  { name: 'ramen', category: 'main', price: 9.00, image: 'images/ramen.jpg' },
-  { name: 'wrap', category: 'others', price: 5.90, image: 'images/wrap.jpg' },
-  { name: 'bbq', category: 'main', price: 11.99, image: 'images/bbq.jpg' },
-  { name: 'dimsum', category: 'others', price: 6.00, image: 'images/dimsum.jpg' },
-  { name: 'shawarma', category: 'main', price: 7.50, image: 'images/shawarma.jpg' },
-  { name: 'lasagna', category: 'main', price: 8.60, image: 'images/lasagna.jpg' },
-  { name: 'icecream', category: 'dessert', price: 3.50, image: 'images/icecream.jpg' },
-  { name: 'cake', category: 'dessert', price: 4.70, image: 'images/cake.jpg' },
-  { name: 'chocolate', category: 'dessert', price: 2.99, image: 'images/chocolate.jpg' },
-  { name: 'smoothie', category: 'others', price: 4.25, image: 'images/smoothie.jpg' },
-  { name: 'juice', category: 'others', price: 2.80, image: 'images/juice.jpg' },
-  { name: 'coffee', category: 'others', price: 3.30, image: 'images/coffee.jpg' },
-  { name: 'tea', category: 'others', price: 2.50, image: 'images/tea.jpg' },
-  { name: 'chicken', category: 'main', price: 8.40, image: 'images/chicken.jpg' },
-  { name: 'meatballs', category: 'main', price: 7.20, image: 'images/meatballs.jpg' },
-  { name: 'kebab', category: 'main', price: 6.99, image: 'images/kebab.jpg' },
-  { name: 'dumpling', category: 'others', price: 5.10, image: 'images/dumpling.jpg' },
-  { name: 'fish', category: 'main', price: 9.30, image: 'images/fish.jpg' },
-  { name: 'sushi', category: 'others', price: 10.99, image: 'images/sushi.jpg' },
-  { name: 'samosa', category: 'starter', price: 2.90, image: 'images/samosa.jpg' },
-  { name: 'donut', category: 'dessert', price: 2.70, image: 'images/donut.jpg' },
-  { name: 'waffle', category: 'dessert', price: 4.20, image: 'images/waffle.jpg' },
-  { name: 'pudding', category: 'dessert', price: 3.80, image: 'images/pudding.jpg' },
-  { name: 'croissant', category: 'dessert', price: 3.60, image: 'images/croissant.jpg' },
-  { name: 'roll', category: 'starter', price: 3.10, image: 'images/roll.jpg' },
-  { name: 'bacon', category: 'main', price: 5.99, image: 'images/bacon.jpg' },
-  { name: 'muffin', category: 'dessert', price: 3.00, image: 'images/muffin.jpg' },
-  { name: 'toast', category: 'starter', price: 2.60, image: 'images/toast.jpg' },
-  { name: 'cupcake', category: 'dessert', price: 3.20, image: 'images/cupcake.jpg' },
-  { name: 'cheesecake', category: 'dessert', price: 4.90, image: 'images/cheesecake.jpg' },
-  { name: 'pasta', category: 'main', price: 7.70, image: 'images/pasta.jpg' },
-  { name: 'milkshake', category: 'others', price: 4.80, image: 'images/milkshake.jpg' },
-  { name: 'falafel', category: 'others', price: 5.40, image: 'images/falafel.jpg' }
-];
-    const grid = document.getElementById('food-grid');
-    let cartCount = localStorage.getItem('cartCount') || 0;
-    document.getElementById('cart-count').innerText = cartCount;
+    let cartCount = 0;
 
-    function renderItems(filter) {
-      grid.innerHTML = '';
-      foodItems.forEach(({ name, category, price }) => {
-        if (filter === 'all' || category === filter) {
-          const div = document.createElement('div');
-          div.className = 'food-item';
-          div.innerHTML = `
-            <img src="https://source.unsplash.com/200x200/?${name},food" alt="${name}" onerror="this.src='fallback.jpg'">
-            <h3>${name.charAt(0).toUpperCase() + name.slice(1)}</h3>
-            <p>₹${price.toFixed(2)}</p>
-            <button class="add-btn" onclick="addToCart(this)">Add Cart</button>
-          `;
-          grid.appendChild(div);
+    function animateCard(button) {
+      const card = button.closest(".card");
+      card.classList.remove("animate");
+      void card.offsetWidth;
+      card.classList.add("animate");
+      cartCount++;
+      document.getElementById("cart-count").textContent = cartCount;
+    }
+
+    function filterItems(category) {
+      const cards = document.querySelectorAll(".card");
+      const buttons = document.querySelectorAll(".filters button");
+
+      buttons.forEach(btn => btn.classList.remove("active"));
+      event.target.classList.add("active");
+
+      cards.forEach(card => {
+        if (category === "all" || card.classList.contains(category)) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
         }
       });
-      setTimeout(() => {
-        document.querySelectorAll('.food-item').forEach(item => {
-          const rect = item.getBoundingClientRect();
-          if (rect.top < window.innerHeight - 50) item.classList.add('visible');
-        });
-      }, 100);
     }
-
-    function addToCart(btn) {
-      cartCount++;
-      localStorage.setItem('cartCount', cartCount);
-      document.getElementById('cart-count').innerText = cartCount;
-      const item = btn.closest('.food-item');
-      item.classList.add('pop');
-      setTimeout(() => item.classList.remove('pop'), 400);
-    }
-
-    document.querySelectorAll('.filter-buttons button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.filter-buttons button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        const filter = button.getAttribute('data-filter');
-        renderItems(filter);
-      });
-    });
-
-    window.addEventListener('scroll', () => {
-      document.querySelectorAll('.food-item').forEach(item => {
-        const rect = item.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 50) item.classList.add('visible');
-      });
-    });
-
-    renderItems('all');
   </script>
 </body>
 </html>
