@@ -179,34 +179,8 @@
     <h1>Your Cart</h1>
   </div>
 
-  <div class="cart-items">
-    <div class="cart-item">
-      <img src="https://images.unsplash.com/photo-1550547660-d9450f859349" alt="Burger" />
-      <div class="item-info">
-        <h3>Burger</h3>
-        <p>₹ 120.00</p>
-      </div>
-      <div class="quantity-controls">
-        <button onclick="decreaseQuantity(this)">-</button>
-        <span>1</span>
-        <button onclick="increaseQuantity(this)">+</button>
-      </div>
-    </div>
-    <div class="cart-item">
-      <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add" alt="Pizza" />
-      <div class="item-info">
-        <h3>Pizza</h3>
-        <p>₹ 200.00</p>
-      </div>
-      <div class="quantity-controls">
-        <button onclick="decreaseQuantity(this)">-</button>
-        <span>1</span>
-        <button onclick="increaseQuantity(this)">+</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="total">Total: ₹ 320.00</div>
+  <div class="cart-items"></div>
+  <div class="total">Total: ₹ 0.00</div>
   <button class="checkout-btn" onclick="showPopup()">Proceed to Checkout</button>
   <button class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
 
@@ -219,12 +193,35 @@
   </div>
 
   <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const container = document.querySelector('.cart-items');
+      container.innerHTML = '';
+      cart.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <p>₹ ${item.price.toFixed(2)}</p>
+          </div>
+          <div class="quantity-controls">
+            <button onclick="decreaseQuantity(this)">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="increaseQuantity(this)">+</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      updateTotal();
+    }
+
     function updateTotal() {
       const items = document.querySelectorAll('.cart-item');
       let total = 0;
       items.forEach(item => {
-        const priceText = item.querySelector('.item-info p').textContent;
-        const price = parseFloat(priceText.replace('₹', '').trim());
+        const price = parseFloat(item.querySelector('.item-info p').textContent.replace('₹', '').trim());
         const quantity = parseInt(item.querySelector('.quantity-controls span').textContent);
         total += price * quantity;
       });
@@ -233,8 +230,7 @@
 
     function increaseQuantity(btn) {
       const span = btn.parentElement.querySelector('span');
-      let quantity = parseInt(span.textContent);
-      span.textContent = quantity + 1;
+      span.textContent = parseInt(span.textContent) + 1;
       updateTotal();
     }
 
@@ -248,9 +244,9 @@
     }
 
     function clearCart() {
-      const items = document.querySelector('.cart-items');
-      items.innerHTML = '';
-      document.querySelector('.total').textContent = 'Total: ₹ 0.00';
+      localStorage.removeItem('cart');
+      document.querySelector('.cart-items').innerHTML = '';
+      updateTotal();
     }
 
     function showPopup() {
@@ -259,7 +255,8 @@
 
     function sendToWhatsApp(choice) {
       let message = `Selected: ${choice}\n`;
-      message += 'Profile Name: Example Name\n';
+      const profileName = localStorage.getItem('profileName') || 'Guest';
+      message += `Profile Name: ${profileName}\n`;
       message += 'Cart Data:\n';
 
       document.querySelectorAll('.cart-item').forEach(item => {
@@ -279,8 +276,7 @@
       window.location.href = 'menu.html';
     }
 
-    updateTotal();
+    loadCart();
   </script>
-
 </body>
 </html>
