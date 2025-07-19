@@ -198,62 +198,63 @@
       const container = document.querySelector('.cart-items');
       container.innerHTML = '';
       cart.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
-          <img src="${item.image}" alt="${item.name}" />
-          <div class="item-info">
-            <h3>${item.name}</h3>
-            <p>₹ ${item.price.toFixed(2)}</p>
-          </div>
-          <div class="quantity-controls">
-            <button onclick="decreaseQuantity(this, '${item.name}')">-</button>
-            <span>${item.quantity}</span>
-            <button onclick="increaseQuantity(this, '${item.name}')">+</button>
-          </div>
-        `;
-        container.appendChild(div);
+        if (item.quantity > 0) {
+          const div = document.createElement('div');
+          div.className = 'cart-item';
+          div.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" />
+            <div class="item-info">
+              <h3>${item.name}</h3>
+              <p>₹ ${item.price.toFixed(2)}</p>
+            </div>
+            <div class="quantity-controls">
+              <button onclick="decreaseQuantity(this, '${item.name}')">-</button>
+              <span>${item.quantity}</span>
+              <button onclick="increaseQuantity(this, '${item.name}')">+</button>
+            </div>
+          `;
+          container.appendChild(div);
+        }
       });
       updateTotal();
     }
 
     function updateCartStorage(name, quantity) {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const updatedCart = cart.map(item => {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.map(item => {
         if (item.name === name) item.quantity = quantity;
         return item;
       });
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      localStorage.setItem('cart', JSON.stringify(cart));
     }
 
     function updateTotal() {
-      const items = document.querySelectorAll('.cart-item');
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
       let total = 0;
-      items.forEach(item => {
-        const price = parseFloat(item.querySelector('.item-info p').textContent.replace('₹', '').trim());
-        const quantity = parseInt(item.querySelector('.quantity-controls span').textContent);
-        total += price * quantity;
+      cart.forEach(item => {
+        total += item.price * item.quantity;
       });
       document.querySelector('.total').textContent = 'Total: ₹ ' + total.toFixed(2);
     }
 
     function increaseQuantity(btn, name) {
-      const span = btn.parentElement.querySelector('span');
-      const quantity = parseInt(span.textContent) + 1;
-      span.textContent = quantity;
-      updateCartStorage(name, quantity);
-      updateTotal();
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.map(item => {
+        if (item.name === name) item.quantity += 1;
+        return item;
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
     }
 
     function decreaseQuantity(btn, name) {
-      const span = btn.parentElement.querySelector('span');
-      let quantity = parseInt(span.textContent);
-      if (quantity > 1) {
-        quantity--;
-        span.textContent = quantity;
-        updateCartStorage(name, quantity);
-        updateTotal();
-      }
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.map(item => {
+        if (item.name === name && item.quantity > 1) item.quantity -= 1;
+        return item;
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
     }
 
     function clearCart() {
@@ -272,15 +273,16 @@
       message += `Profile Name: ${profileName}\n`;
       message += 'Cart Data:\n';
 
-      document.querySelectorAll('.cart-item').forEach(item => {
-        const name = item.querySelector('h3').textContent;
-        const price = item.querySelector('p').textContent;
-        const quantity = item.querySelector('.quantity-controls span').textContent;
-        message += `${name} - ${price} x ${quantity}\n`;
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.forEach(item => {
+        if (item.quantity > 0) {
+          message += `${item.name} - ₹ ${item.price.toFixed(2)} x ${item.quantity}\n`;
+        }
       });
 
-      const total = document.querySelector('.total').textContent;
-      message += total;
+      let total = 0;
+      cart.forEach(item => total += item.price * item.quantity);
+      message += `Total: ₹ ${total.toFixed(2)}`;
 
       const whatsappUrl = `https://wa.me/917679643925?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
