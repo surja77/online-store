@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <style>
+    body {
+      background-color: #0b0b15;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 15px;
+    }
+    .header {
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1565895405130-6e0f3dc05f5b') center/cover;
+      border-radius: 15px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header h1 {
+      color: white;
+      text-shadow: 1px 1px 4px black;
+    }
+    .profile-btn, .menu-btn {
+      position: absolute;
+      top: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 20px;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .profile-btn { left: 10px; }
+    .menu-btn { right: 10px; }
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .cart-item {
+      background: #1c1c2e;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .item-info {
+      flex-grow: 1;
+      padding: 0 15px;
+      min-width: 120px;
+    }
+    .item-info h3 { margin: 0 0 5px; }
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .quantity-controls button {
+      background: #ff4d4d;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .remove-btn {
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background 0.3s;
+    }
+    .remove-btn:hover {
+      background: #e63939;
+    }
+    .total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .checkout-btn, .clear-cart-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      font-size: 16px;
+      background-color: #ff4d4d;
+      color: white;
+      cursor: pointer;
+    }
+    .popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .popup-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+    }
+    .popup-content h2 {
+      margin-bottom: 20px;
+    }
+    .popup-content button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #ff4d4d;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="profile-btn" onclick="location.href='profile.html'">👤</button>
+    <button class="menu-btn" onclick="location.href='menu.html'">🍔</button>
+    <h1>Your Cart</h1>
+  </div>
+
+  <div class="cart-items"></div>
+  <div class="total">Total: ₹ 0.00</div>
+  <button class="checkout-btn" onclick="showCheckoutPopup()">Proceed to Checkout</button>
+  <button class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
+
+  <div id="checkoutPopup" class="popup" style="display: none;">
+    <div class="popup-content">
+      <h2>Select Option</h2>
+      <button onclick="submitCheckout('Up')">Up</button>
+      <button onclick="submitCheckout('Down')">Down</button>
+    </div>
+  </div>
+
+  <script>
+    let totalAmount = 0;
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const container = document.querySelector('.cart-items');
+      if (!container) return;
+      container.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        if (!item.quantity) item.quantity = 1;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <p>₹ ${item.price.toFixed(2)}</p>
+          </div>
+          <div class="quantity-controls">
+            <button onclick="updateQuantity('${item.name}', -1)">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="updateQuantity('${item.name}', 1)">+</button>
+          </div>
+          <button class="remove-btn" onclick="removeItem('${item.name}')">Remove</button>
+        `;
+        container.appendChild(div);
+        total += item.price * item.quantity;
+      });
+
+      totalAmount = total;
+      const totalElement = document.querySelector('.total');
+      if (totalElement) {
+        totalElement.textContent = 'Total: ₹ ' + total.toFixed(2);
+      }
+    }
+
+    function updateQuantity(name, change) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.map(item => {
+        if (item.name === name) {
+          item.quantity = Math.max(1, item.quantity + change);
+        }
+        return item;
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    function removeItem(name) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => item.name !== name);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    function clearCart() {
+      localStorage.removeItem('cart');
+      loadCart();
+    }
+
+    function showCheckoutPopup() {
+      document.getElementById('checkoutPopup').style.display = 'flex';
+    }
+
+    function submitCheckout(option) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const profileName = localStorage.getItem('username') || 'User';
+
+      if (!cart.length) {
+        alert("Cart is empty. Please add items before proceeding.");
+        return;
+      }
+
+      const cartData = cart.map(i => `${i.name} x${i.quantity}`).join(', ');
+      const receipt = `Name: ${profileName}\nCart: ${cartData}\nTotal: ₹ ${totalAmount.toFixed(2)}\nOption: ${option}`;
+      const encodedMessage = encodeURIComponent(receipt);
+      const whatsappUrl = `https://wa.me/7679643925?text=${encodedMessage}`;
+      const newWindow = window.open(whatsappUrl, '_blank');
+
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        alert("Popup blocked! Please allow popups for this site to open WhatsApp.");
+        return;
+      }
+
+      const history = JSON.parse(localStorage.getItem('orderHistory')) || [];
+      history.push(receipt.replace(/\n/g, '<br>'));
+      localStorage.setItem('orderHistory', JSON.stringify(history));
+
+      localStorage.removeItem('cart');
+      setTimeout(() => {
+        window.location.href = 'menu.html';
+      }, 3000);
+
+      document.getElementById('checkoutPopup').style.display = 'none';
+    }
+
+    window.addEventListener('DOMContentLoaded', loadCart);
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f36b7f, #c57ff5);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #0f0f1b;
+      color: white;
+      border-radius: 20px;
+      padding: 30px 20px;
+      margin-top: 40px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: calc(100% - 24px);
+      padding: 12px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      background-color: #fff;
+      color: #000;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #ff5c5c;
+      color: white;
+      transition: transform 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(1.1);
+    }
+
+    .orders {
+      background: #1f1f2e;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .order-item {
+      background: #2c2c3e;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .clear-btn {
+      background-color: #444;
+    }
+
+    .back-btn {
+      background-color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to Your Profile</h2>
+
+    <input type="text" id="username" placeholder="Enter your name" />
+    <button id="saveBtn">Save Name</button>
+    <button class="back-btn" id="backBtn">Back</button>
+
+    <h3>Past Orders</h3>
+    <div class="orders" id="ordersList">
+      <p>No orders yet.</p>
+    </div>
+    <button class="clear-btn" id="clearBtn">Clear Order History</button>
+  </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const usernameInput = document.getElementById("username");
+      const savedName = localStorage.getItem("username");
+      if (savedName) {
+        usernameInput.value = savedName;
+      }
+      showOrders();
+
+      document.getElementById("saveBtn").addEventListener("click", () => {
+        const name = usernameInput.value.trim();
+        if (name) {
+          localStorage.setItem("username", name);
+          alert("Name saved!");
+        }
+      });
+
+      document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "menu.html";
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        if (confirm("Are you sure you want to clear all past orders?")) {
+          localStorage.removeItem("orderHistory");
+          showOrders();
+        }
+      });
+    });
+
+    function showOrders() {
+      const ordersContainer = document.getElementById("ordersList");
+      const orderData = JSON.parse(localStorage.getItem("orderHistory")) || [];
+
+      if (!Array.isArray(orderData) || orderData.length === 0) {
+        ordersContainer.innerHTML = "<p>No orders yet.</p>";
+        return;
+      }
+
+      ordersContainer.innerHTML = "";
+      orderData.forEach((order, index) => {
+        const div = document.createElement("div");
+        div.className = "order-item";
+        div.innerHTML = `<strong>Order #${index + 1}</strong><br>${order}`;
+        ordersContainer.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

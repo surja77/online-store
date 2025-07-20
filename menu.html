@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Menu</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #0b0b15;
+      color: white;
+      padding: 10px;
+    }
+
+    .header {
+      position: relative;
+      background-image: url('https://images.unsplash.com/photo-1586190848861-99aa4a171e90');
+      background-size: cover;
+      background-position: center;
+      height: 200px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header h1 {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+    }
+
+    .profile-btn, .cart-btn {
+      position: absolute;
+      top: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 20px;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .profile-btn {
+      left: 10px;
+    }
+
+    .cart-btn {
+      right: 10px;
+    }
+
+    .cart-btn span {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filters button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 20px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+
+    .filters button.active {
+      background-color: #ff4d4d;
+    }
+
+    .food-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .card {
+      background-color: #1c1c2e;
+      border-radius: 10px;
+      width: calc(33% - 10px);
+      padding: 10px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: scale(0.9);
+      animation: popup 0.4s ease forwards;
+    }
+
+    .card.animate {
+      animation: clickPopup 0.4s ease;
+    }
+
+    @keyframes popup {
+      0% {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes clickPopup {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .card img {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    .card button {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        width: calc(50% - 10px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <button class="profile-btn" onclick="window.location.href='profile.html'">👤</button>
+    <button class="cart-btn" onclick="window.location.href='cart.html'">🛒<span id="cart-count">0</span></button>
+    <h1>Different<br>Kind of Food</h1>
+  </div>
+
+  <div class="filters">
+    <button class="active" onclick="filterItems('all')">All</button>
+    <button onclick="filterItems('starter')">Starter</button>
+    <button onclick="filterItems('maincourse')">Main Course</button>
+    <button onclick="filterItems('dessert')">Dessert</button>
+    <button onclick="filterItems('other')">Other</button>
+  </div>
+
+  <div class="food-list">
+    <!-- Food items as .card elements -->
+
+    <div class="card starter">
+      <img src="https://images.unsplash.com/photo-1600891963934-74c3dc1b86f3" alt="Veg Soup" />
+      <p>Veg Soup</p>
+      <p>₹ 60.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+
+    <div class="card maincourse">
+      <img src="https://images.unsplash.com/photo-1600628422019-4b57c681c99e" alt="Butter Chicken" />
+      <p>Butter Chicken</p>
+      <p>₹ 180.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+
+    <div class="card dessert">
+      <img src="https://images.unsplash.com/photo-1559628232-b5f3d4a3d38e" alt="Gulab Jamun" />
+      <p>Gulab Jamun</p>
+      <p>₹ 50.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+
+    <div class="card starter">
+      <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f" alt="Paneer Tikka" />
+      <p>Paneer Tikka</p>
+      <p>₹ 120.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+
+    <div class="card other">
+      <img src="https://images.unsplash.com/photo-1585238342028-08d04c1d3d8f" alt="Mojito" />
+      <p>Mojito</p>
+      <p>₹ 70.00</p>
+      <button onclick="animateCard(this)">Add Cart</button>
+    </div>
+  </div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    document.getElementById("cart-count").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    function animateCard(button) {
+      const card = button.closest(".card");
+      card.classList.remove("animate");
+      void card.offsetWidth;
+      card.classList.add("animate");
+
+      const name = card.querySelector("p:nth-of-type(1)").textContent;
+      const priceText = card.querySelector("p:nth-of-type(2)").textContent;
+      const price = parseFloat(priceText.replace('₹', '').trim());
+      const image = card.querySelector("img").src;
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existingItem = cart.find(item => item.name === name);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({ name, price, image, quantity: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      document.getElementById("cart-count").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
+
+    function filterItems(category) {
+      const cards = document.querySelectorAll(".card");
+      const buttons = document.querySelectorAll(".filters button");
+
+      buttons.forEach(btn => btn.classList.remove("active"));
+      event.target.classList.add("active");
+
+      cards.forEach(card => {
+        if (category === "all" || card.classList.contains(category)) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
